@@ -1,0 +1,32 @@
+.container {
+  background: #fff;
+  border: 1px solid #dcdcdc;
+  border-radius: 7px;
+  margin: 2rem 0rem 0rem 2rem;
+}
+
+.head {
+  background: #333;
+  color: #fff;
+  font-size: 1rem;
+  padding: 0.9rem;
+}
+
+.list {
+  list-style: none;
+  margin: 0px;
+  padding: 0px;
+}
+
+.listItem {
+  cursor: pointer;
+  border-bottom: 1px solid #efefef;
+  display: inline-block;
+  padding: 0.7rem;
+  width: 100%;
+  &:hover {
+    background: #f7f7f7;
+    font-weight: bold;
+    text-decoration: none;
+  }
+}
