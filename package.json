@@ -11,7 +11,9 @@
     "d3-interpolate": "1.1.6",
     "d3-scale": "1.0.7",
     "d3-selection": "1.2.0",
+    "gatekeeper": "git://github.com/prose/gatekeeper.git",
     "gsap": "1.20.3",
+    "kill-port": "1.1.0",
     "lodash": "4.17.4",
     "moment": "2.19.3",
     "react": "16.2.0",
@@ -27,7 +29,8 @@
     "redux-thunk": "2.2.0"
   },
   "scripts": {
-    "start": "webpack-dashboard -c cyan -- react-scripts start",
+    "start":
+      "kill-port 9999 && ./gatekeeper.sh && node ./node_modules/gatekeeper/index.js & webpack-dashboard -c cyan -- react-scripts start",
     "build": "react-scripts build",
     "pretest": "npm run test:lint",
     "test": "npm run test:unit",
