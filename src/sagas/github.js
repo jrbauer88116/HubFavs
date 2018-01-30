@@ -1,5 +1,21 @@
 import { takeEvery, put } from 'redux-saga/effects'
-import api from '../services/github'
+
+const api = {
+  query (query) {
+    return fetch('https://api.github.com/graphql', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer 5817a659c396fea1e341317f0f04667734df8c9f'
+      },
+      body: JSON.stringify(query)
+    })
+      .then(response => response.json())
+      .then(json => {
+        return json
+      })
+  }
+}
 
 function * getRepositories () {
   try {
@@ -7,7 +23,7 @@ function * getRepositories () {
       query:
         '{user(login: "jordwalke") {repositories(first: 100) { pageInfo {hasNextPage endCursor } edges { node { name description } } } } }'
     }
-    let res = yield api.query(query)
+    let res = api.query(query)
     let repos = []
     res.data.user.repositories.edges.map(r => {
       repos.push({ name: r.node.name, description: r.node.description })
