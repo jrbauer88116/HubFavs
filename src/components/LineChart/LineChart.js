@@ -51,12 +51,6 @@ const LineChart = class LineChart extends Component {
         })
         .curve(curveLinear)
 
-      // tooltips
-      var div = d3Select('svg')
-        .append('div')
-        .attr('class', 'tooltip')
-        .style('opacity', 0)
-
       var svg = d3Select(this.svgRoot)
         .append('svg')
         .attr('width', width + margin.left + margin.right)
