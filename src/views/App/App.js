@@ -15,7 +15,6 @@ import './app.scss'
 const mapStateToProps = state => {
   return {
     token: state.gitHub.token
-    // repos: state.gitHub.repos
   }
 }
 
