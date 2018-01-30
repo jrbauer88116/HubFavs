@@ -14,46 +14,93 @@ import './app.scss'
 
 const mapStateToProps = state => {
   return {
-    repos: state.gitHub.repos
+    token: state.gitHub.token
+    // repos: state.gitHub.repos
   }
 }
 
 const mapDispatchToProps = dispatch => {
-  return {}
+  return {
+    getAccessToken: code => dispatch({ type: 'GET_ACCESS_TOKEN', code: code })
+  }
 }
 
-class App extends Component {
-  render () {
-    const { repos } = this.props
-    return (
-      <Router>
-        <main>
-          <Row>
-            <Col>
-              <Header />
-            </Col>
-          </Row>
+const params = location.search.substring(1)
 
-          <Row>
-            <Col xs='3'>
-              <Sidebar repos={repos} />
-            </Col>
-            <Col xs='9'>
-              <Route exact path='/' component={Home} />
-              <Route
-                path='/repo/:owner/:repo'
-                render={router => <Repo router={router} repos={repos} />}
-              />
-            </Col>
-          </Row>
-        </main>
-      </Router>
+class App extends Component {
+  constructor (props) {
+    super(props)
+
+    const accessCode = this.unserialize(params).code
+    if (accessCode) {
+      this.props.getAccessToken(accessCode)
+    }
+  }
+
+  render () {
+    return <Router>{this.content()}</Router>
+  }
+
+  authed () {
+    return (
+      <main>
+        <Row>
+          <Col>
+            <Header />
+          </Col>
+        </Row>
+        <Row>
+          <Col xs='3'>
+            <Sidebar />
+          </Col>
+          <Col xs='9'>
+            <Route exact path='/' component={Home} />
+            <Route
+              path='/repo/:owner/:repo'
+              render={router => <Repo router={router} />}
+            />
+          </Col>
+        </Row>
+      </main>
     )
+  }
+
+  unauthed () {
+    return (
+      <main>
+        <Row>
+          <Col>
+            <a
+              href='https://github.com/login/oauth/authorize?client_id=bb4d440c99a91c70bbb7&redirect_uri=http://localhost:3000&state=fdadsfe&allow_signup=true'
+              styleName='login'
+            >
+              GitHub Sign In
+            </a>
+          </Col>
+        </Row>
+      </main>
+    )
+  }
+
+  content () {
+    return this.props.token ? this.authed() : this.unauthed()
+  }
+
+  unserialize (str) {
+    str = decodeURIComponent(str)
+    let chunks = str.split('&')
+    let obj = {}
+    for (let c = 0; c < chunks.length; c++) {
+      let split = chunks[c].split('=', 2)
+      obj[split[0]] = split[1]
+    }
+    return obj
   }
 }
 
 App.propTypes = {
-  repos: PropTypes.array.isRequired
+  getAccessToken: PropTypes.func.isRequired,
+  token: PropTypes.string
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(App)

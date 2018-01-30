@@ -3,3 +3,17 @@ body {
   padding: 0;
   font-family: sans-serif;
 }
+
+.login {
+  background-color: #28a745;
+  color: #fff;
+  display: block;
+  margin: 10.5rem auto 1.5rem auto;
+  padding: 1rem;
+  text-align: center;
+  width: 250px;
+  &:hover {
+    color: #efefef;
+    text-decoration: none;
+  }
+}

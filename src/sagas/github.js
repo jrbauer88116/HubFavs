@@ -1,14 +1,23 @@
-import { takeEvery, put } from 'redux-saga/effects'
+import { takeEvery, put, select } from 'redux-saga/effects'
 
 const api = {
-  query (query) {
+  query (query, token) {
     return fetch('https://api.github.com/graphql', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer 5817a659c396fea1e341317f0f04667734df8c9f'
+        Authorization: 'token ' + token
       },
       body: JSON.stringify(query)
+    })
+      .then(response => response.json())
+      .then(json => {
+        return json
+      })
+  },
+  get (endpoint) {
+    return fetch(endpoint, {
+      method: 'GET'
     })
       .then(response => response.json())
       .then(json => {
@@ -36,6 +45,8 @@ function * getRepositories () {
 
 function * getCommits (params) {
   try {
+    const state = yield select()
+    const token = state.gitHub.token
     let commits = []
     const query = {
       query:
@@ -45,7 +56,7 @@ function * getCommits (params) {
         params.repo +
         '") { ref(qualifiedName: "master") { target { ... on Commit { history(first: 100) { pageInfo { hasNextPage endCursor } edges { node { committedDate oid messageHeadline }}}}}}}}'
     }
-    const res = yield api.query(query)
+    const res = yield api.query(query, token)
     let commitsObj = res.data.repository.ref.target.history.edges
     commitsObj.map(commit => {
       commits.push(commit.node)
@@ -56,10 +67,22 @@ function * getCommits (params) {
   }
 }
 
+function * getAccessToken (params) {
+  try {
+    const token = yield api.get(
+      'http://localhost:9999/authenticate/' + params.code
+    )
+    yield put({ type: 'STORE_TOKEN', token: token.token })
+  } catch (e) {
+    console.debug(e)
+  }
+}
+
 function * github () {
   return yield [
     takeEvery('GET_REPOSITORIES', getRepositories),
-    takeEvery('GET_COMMITS', getCommits)
+    takeEvery('GET_COMMITS', getCommits),
+    takeEvery('GET_ACCESS_TOKEN', getAccessToken)
   ]
 }
 
