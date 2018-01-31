@@ -5,6 +5,8 @@ import { line, curveLinear } from 'd3-shape'
 import { select as d3Select } from 'd3-selection'
 import { axisBottom, axisLeft } from 'd3-axis'
 import { scaleTime, scaleLinear } from 'd3-scale'
+import { TweenLite, TimelineLite } from 'gsap'
+import 'gsap/CSSPlugin'
 
 import './lineChart.scss'
 
@@ -16,6 +18,9 @@ const LineChart = class LineChart extends Component {
 
   componentDidUpdate (prevProps, prevState) {
     d3Select('svg').remove()
+    var tl = new TimelineLite()
+    tl.add(TweenLite.to('.line', 1, { stroke: '#007bff', delay: 0.5 }))
+    tl.add(TweenLite.to('.dot', 0.5, { fill: '#074f9c' }))
   }
 
   render () {
@@ -91,7 +96,7 @@ const LineChart = class LineChart extends Component {
         .attr('class', 'line')
         .attr('d', lines)
         .attr('fill', 'none')
-        .attr('stroke', 'purple')
+        .attr('stroke', '#efefef')
         .attr('stroke-width', 2)
 
       svg
@@ -99,6 +104,7 @@ const LineChart = class LineChart extends Component {
         .data(data)
         .enter()
         .append('circle')
+        .attr('fill', '#007bff')
         .attr('class', 'dot')
         .attr('cx', (d, i) => {
           return xScale(new Date(d[0]))

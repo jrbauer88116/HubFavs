@@ -29,8 +29,7 @@
     "redux-thunk": "2.2.0"
   },
   "scripts": {
-    "start":
-      "kill-port 9999 && ./gatekeeper.sh && node ./node_modules/gatekeeper/index.js & webpack-dashboard -c cyan -- react-scripts start",
+    "start": "kill-port 9999 && ./gatekeeper.sh && node ./node_modules/gatekeeper/index.js & webpack-dashboard -c cyan -- react-scripts start",
     "build": "react-scripts build",
     "pretest": "npm run test:lint",
     "test": "npm run test:unit",
